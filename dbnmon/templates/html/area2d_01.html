@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<meta charset="UTF-8">
+		<title>数据库状态监控中心</title>
+		<meta http-equiv="keywords" content="Database status moniter center">
+   	 	<meta http-equiv="description" content="数据库监控中心">
+   	 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    	<link rel="shortcut icon" href="resources/favicon.png">
+		<script type="text/javascript" src="resources/jquery-1.js"></script>
+		<script type="text/javascript" src="resources/jquery-ui-1.js"></script>
+		<link rel="stylesheet" href="resources/jquery.css">
+		<link rel="stylesheet" href="resources/style.css" type="text/css">
+		<script type="text/javascript">
+			if(window.location.href=="http://www.ichartjs.com/samples/"){
+				window.location.href = "http://www.ichartjs.com/samples/index.html";
+			}
+			var hash = document.location.hash,$pre,$num,$win,index=0,SUPPORT = false;
+			
+			function iQuery(){
+				var Request = null; 
+				var search=location.search;
+				if(search.indexOf("?")!=-1) 
+				{ 
+					Request = new Object();
+					search = search.substring(1,search.length);
+					search = search.split("&"); 
+					for(var i=0;i<search.length;i++) 
+					{ 
+						Request[search[i].split("=")[0]]=search[i].split("=")[1]; 
+					}
+					if(!Request['page']){
+						Request = null;
+					}else{
+						if(Request['page'].indexOf(".html")==-1){
+							Request['page']= Request['page'] + ".html";
+						}
+					} 
+				} 
+				return Request;
+			}
+			var Request = iQuery();
+			$(function() {
+				var icons = {
+					header: "ui-icon-circle-arrow-e",
+					headerSelected: "ui-icon-circle-arrow-s"
+				};
+				$( "#ichartjs_accordion" ).accordion({
+					icons: icons,
+					active:false,
+					collapsible: true,
+					autoHeight: false
+				}); 
+
+				try{ 
+					document.createElement('canvas').getContext('2d');
+					SUPPORT = true;
+					if(Request){
+						document.getElementById("viewport").src="html/"+Request['page'];	
+						index = parseInt(Request['pageno']) || 0;
+					}else if(hash.indexOf("#")!=-1&&hash.split('&').length>1){
+						hash = hash.substring(1,hash.length);
+						hash = hash.split('&');
+						if(hash[0].indexOf(".html")==-1){
+							hash[0]+=".html";
+						}
+						if(hash[1].indexOf("#")!=-1){
+							hash[1] = hash[1].substring(0,hash[1].indexOf("#"));
+						}
+						index = parseInt(hash[1]) || 0;
+						document.getElementById("viewport").src="html/"+hash[0];
+					}else{
+						document.getElementById("viewport").src="html/area2d_01.html";
+					}
+				}catch (e) {
+					document.getElementById("viewport").src="notsupport.html";
+				}
+
+				//隐藏分享按钮
+				if(!SUPPORT){
+					$("#ichartjs_weibo_share").hide();
+				}
+				
+				$( "#ichartjs_accordion" ).accordion( "activate" ,index);
+				
+				$pre = $("#ichartjs_pre");
+				$num = $("#ichartjs_number");
+				$win = $("#ichartjs_codeview");
+				$win.dialog({
+					width:'auto',
+					height:600,
+					maxWidth:1000,
+					modal: true,
+					autoHeight: true,
+					autoOpen:false,
+					open:function(){
+						$(document.body).css("overflow","hidden");
+					},
+					close:function(){
+						$(document.body).css("overflow","visible");
+					}
+				});
+			});
+			var keyword = new RegExp("(var |true|false|function|new |null|return|if|else)","g");
+			var quote = new RegExp("'(.*?)'","g");
+			var dQuote = new RegExp('"(.*?)"',"g");
+			var row = new RegExp("^","m");
+			var note = new RegExp("(//.*)","g");
+			var xml = new RegExp("<","g");
+			function viewCode(doc){
+				//获取最后一个script
+				var scripts = doc.getElementsByTagName("script");	
+				var html = scripts[scripts.length-1].innerHTML;
+				//简单的代码语法显示
+				html = html.replace(xml,"&lt;");
+				html = html.replace(quote,"'<span class=ichartjs_string>$1</span>'");	
+				html = html.replace(dQuote,'"<span class=ichartjs_string>$1</span>"');	
+				html = html.replace("ichartjs_string","'ichartjs_string'");	
+				html = html.replace(keyword,"<span class='ichartjs_keyword'>$1</span>");
+				var tt = html.split(row);
+				tt.shift();//去除第一行空行
+				var number = [],j = 1;
+				for(var i=0;i<tt.length;i++){
+					tt[i] = tt[i].replace(note,"<span class='ichartjs_note'>$1</span>");
+					tt[i] = "<div id='ichartjs_row_"+i+"'>"+tt[i]+"</div>";
+					number.push("<span class='ichartjs_number' row="+i+">"+(j++)+".</span><br/>");
+				}
+				
+				$num.html(number.join(""));	
+				$pre.html(tt.join(""));
+				
+				$(".ichartjs_number").hover(function(){
+					$("#ichartjs_row_"+$(this).attr("row")).addClass("ichartjs_number_over");
+				},function(){
+					$("#ichartjs_row_"+$(this).attr("row")).removeClass("ichartjs_number_over");
+				});	
+				
+				$( "#ichartjs_codeview" ).dialog("open"); 
+			}
+		</script>
+	<script src="resources/logger.js"></script><link type="text/css" rel="stylesheet" href="resources/bdsstyle.css"></head>
+	<body>
+		<div id="ichartjs_view">
+			<iframe src="column2d_01.html" name="viewport" id="viewport" style="border:none;" frameborder="0" height="500" width="100%"> 
+			</iframe>
+		</div>
+		<div id="ichartjs_view">
+			<iframe src="column2d_01.html" name="viewport" id="viewport" style="border:none;" frameborder="0" height="500" width="100%"> 
+			</iframe>
+		</div>
+	<div aria-labelledby="ui-dialog-title-ichartjs_codeview" role="dialog" tabindex="-1" class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-draggable ui-resizable" style="display: none; z-index: 1000; outline: 0px none; position: absolute;"><div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix"><span id="ui-dialog-title-ichartjs_codeview" class="ui-dialog-title">Js代码</span><a role="button" class="ui-dialog-titlebar-close ui-corner-all" href="#"><span class="ui-icon ui-icon-closethick">close</span></a></div><div class="ui-dialog-content ui-widget-content" id="ichartjs_codeview">
+			<table id="ichartjs_code">
+				<tbody><tr>
+					<td valign="top">
+						<pre id="ichartjs_number"></pre>
+					</td>
+					<td valign="top">
+						<pre id="ichartjs_pre"></pre>
+					</td>
+				</tr>
+			</tbody></table>
+		</div><div style="z-index: 1000;" class="ui-resizable-handle ui-resizable-n"></div><div style="z-index: 1000;" class="ui-resizable-handle ui-resizable-e"></div><div style="z-index: 1000;" class="ui-resizable-handle ui-resizable-s"></div><div style="z-index: 1000;" class="ui-resizable-handle ui-resizable-w"></div><div style="z-index: 1000;" class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se ui-icon-grip-diagonal-se"></div><div style="z-index: 1000;" class="ui-resizable-handle ui-resizable-sw"></div><div style="z-index: 1000;" class="ui-resizable-handle ui-resizable-ne"></div><div style="z-index: 1000;" class="ui-resizable-handle ui-resizable-nw"></div></div></body></html>

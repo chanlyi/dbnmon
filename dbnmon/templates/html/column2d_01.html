@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<meta charset="UTF-8">
+		<title>ichartjs 示例</title>
+		<meta name="Description" content="The ichartjs's gallery center,ichartjs 示例中心">
+		<meta name="Keywords" content="ichartjs demo,Html5 demo,ichartjs示例,ichartjs示例,Html5示例,Html5示例">
+		<script type="text/javascript" src="column2d_01_data/ichart.js"></script>
+		<link rel="stylesheet" href="column2d_01_data/demo.css" type="text/css">
+		<script type="text/javascript">
+				$(function(){
+					var data = [
+					        	{name : 'IE',value : 15.75,color:'#a5c2d5'},
+					        	{name : 'Chrome',value : 49.84,color:'#cbab4f'},
+					        	{name : 'Firefox',value : 34.88,color:'#76a871'},
+					        	{name : 'Safari',value : 0.77,color:'#9f7961'},
+					        	{name : 'Opera',value : 0.02,color:'#a56f8f'},
+					        	{name : 'Other',value : 10.73,color:'#6f83a5'},
+					        	{name : 'IE',value : 15.75,color:'#a5c2d5'},
+					        	{name : 'Chrome',value : 49.84,color:'#cbab4f'},
+					        	{name : 'Opera',value : 0.02,color:'#a56f8f'},
+					        	{name : 'Other',value : 10.73,color:'#6f83a5'}
+				        	];
+		        	
+					new iChart.Column2D({
+						render : 'canvasDiv',
+						data: data,
+						title : '服务器硬件信息',
+						showpercent:true,
+						decimalsnum:2,
+						width : 600,
+						height : 300,
+						coordinate:{
+							background_color:'#fefefe',
+							scale:[{
+								 position:'left',	
+								 start_scale:0,
+								 end_scale:40,
+								 scale_space:8,
+								 listeners:{
+									parseText:function(t,x,y){
+										return {text:t+"%"}
+									}
+								}
+							}]
+						}
+					}).draw();
+			});
+				
+			</script>
+		</head>
+		<body>
+			<div id="canvasDiv"><div id="shell-column2d_9077881013037" style="padding: 0px; margin: 0px auto; overflow: hidden; position: relative; width: 800px; height: 400px;"><canvas height="400" width="800" id="column2d_9077881013037" style="width: 800px; height: 400px; cursor: default;"><p>Your browser does not support the canvas element</p></canvas></div></div>
+			<div class="ichartjs_info">
+				<div class="ichartjs_sm">说明</div>
+				<div class="ichartjs_details">
+					这是一个柱形图示例，该示例展示了2012年2月份市场浏览器占有的情况。此示例中，配置了个性化的值轴。并以百分比的形式展示数据值。
+				</div>
+				<span class="ichartjs_sm">备注：</span>
+				<span class="ichartjs_details">
+					数据均为模拟。
+				</span>
+			</div>
+		
+
+</body></html>
